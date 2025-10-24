@@ -1,5 +1,6 @@
 package qupath.ui.logviewer.ui.main;
 
+import org.junit.jupiter.api.Assertions;
 import qupath.ui.logviewer.api.LogMessage;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
@@ -10,9 +11,6 @@ import org.slf4j.event.Level;
 import java.nio.charset.StandardCharsets;
 import java.util.Random;
 import java.util.function.Predicate;
-
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 public class TestLogMessagePredicates {
@@ -32,8 +30,8 @@ public class TestLogMessagePredicates {
             boolean emptyMessageTest = predicate.test(new LogMessage("", 0, "", Level.TRACE, "", null));
             boolean randomMessageTest = predicate.test(new LogMessage("", 0, "", Level.TRACE, generateRandomString(5), null));
 
-            assertTrue(emptyMessageTest);
-            assertTrue(randomMessageTest);
+            Assertions.assertTrue(emptyMessageTest);
+            Assertions.assertTrue(randomMessageTest);
         }
 
         @Test
@@ -43,8 +41,8 @@ public class TestLogMessagePredicates {
             boolean emptyMessageTest = predicate.test(new LogMessage("", 0, "", Level.TRACE, "", null));
             boolean randomMessageTest = predicate.test(new LogMessage("", 0, "", Level.TRACE, generateRandomString(10), null));
 
-            assertTrue(emptyMessageTest);
-            assertTrue(randomMessageTest);
+            Assertions.assertTrue(emptyMessageTest);
+            Assertions.assertTrue(randomMessageTest);
         }
 
         @Test
@@ -53,7 +51,7 @@ public class TestLogMessagePredicates {
 
             boolean test = predicate.test(new LogMessage("", 0, "", Level.TRACE, null, null));
 
-            assertFalse(test);
+            Assertions.assertFalse(test);
         }
 
         @Test
@@ -63,7 +61,7 @@ public class TestLogMessagePredicates {
 
             boolean test = predicate.test(new LogMessage("", 0, "", Level.TRACE, text, null));
 
-            assertTrue(test);
+            Assertions.assertTrue(test);
         }
 
         @Test
@@ -73,7 +71,7 @@ public class TestLogMessagePredicates {
 
             boolean test = predicate.test(new LogMessage("", 0, "", Level.TRACE, text.toUpperCase(), null));
 
-            assertTrue(test);
+            Assertions.assertTrue(test);
         }
 
         @Test
@@ -83,7 +81,7 @@ public class TestLogMessagePredicates {
 
             boolean test = predicate.test(new LogMessage("", 0, "", Level.TRACE, text.toLowerCase(), null));
 
-            assertTrue(test);
+            Assertions.assertTrue(test);
         }
 
         @Test
@@ -93,7 +91,7 @@ public class TestLogMessagePredicates {
 
             boolean test = predicate.test(new LogMessage("", 0, "", Level.TRACE, text, null));
 
-            assertTrue(test);
+            Assertions.assertTrue(test);
         }
 
         @Test
@@ -102,7 +100,7 @@ public class TestLogMessagePredicates {
 
             boolean test = predicate.test(new LogMessage("", 0, "", Level.TRACE, "text", null));
 
-            assertFalse(test);
+            Assertions.assertFalse(test);
         }
     }
 
@@ -115,8 +113,8 @@ public class TestLogMessagePredicates {
             boolean emptyMessageTest = predicate.test(new LogMessage("", 0, "", Level.TRACE, "", null));
             boolean randomMessageTest = predicate.test(new LogMessage("", 0, "", Level.TRACE, generateRandomString(10), null));
 
-            assertTrue(emptyMessageTest);
-            assertTrue(randomMessageTest);
+            Assertions.assertTrue(emptyMessageTest);
+            Assertions.assertTrue(randomMessageTest);
         }
 
         @Test
@@ -126,8 +124,8 @@ public class TestLogMessagePredicates {
             boolean emptyMessageTest = predicate.test(new LogMessage("", 0, "", Level.TRACE, "", null));
             boolean randomMessageTest = predicate.test(new LogMessage("", 0, "", Level.TRACE, generateRandomString(10), null));
 
-            assertTrue(emptyMessageTest);
-            assertTrue(randomMessageTest);
+            Assertions.assertTrue(emptyMessageTest);
+            Assertions.assertTrue(randomMessageTest);
         }
 
         @Test
@@ -136,7 +134,7 @@ public class TestLogMessagePredicates {
 
             boolean test = predicate.test(new LogMessage("", 0, "", Level.TRACE, null, null));
 
-            assertFalse(test);
+            Assertions.assertFalse(test);
         }
 
         @Test
@@ -145,7 +143,7 @@ public class TestLogMessagePredicates {
 
             boolean test = predicate.test(new LogMessage("", 0, "", Level.TRACE, "text", null));
 
-            assertTrue(test);
+            Assertions.assertTrue(test);
         }
 
         @Test
@@ -154,7 +152,7 @@ public class TestLogMessagePredicates {
 
             boolean test = predicate.test(new LogMessage("", 0, "", Level.TRACE, "dfgsdf jim", null));
 
-            assertTrue(test);
+            Assertions.assertTrue(test);
         }
 
         @Test
@@ -163,7 +161,7 @@ public class TestLogMessagePredicates {
 
             boolean test = predicate.test(new LogMessage("", 0, "", Level.TRACE, "azeraze jom", null));
 
-            assertFalse(test);
+            Assertions.assertFalse(test);
         }
     }
 }

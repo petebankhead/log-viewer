@@ -1,5 +1,6 @@
 package qupath.ui.logviewer.logging.jdk;
 
+import org.junit.jupiter.api.Assertions;
 import qupath.ui.logviewer.api.LogMessage;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
@@ -13,12 +14,10 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 public class TestJdkManager {
 
-    private static final Logger slf4jLogger = LoggerFactory.getLogger(JdkManager.class);
+    private static final Logger slf4jLogger = LoggerFactory.getLogger(TestJdkManager.class);
     private static final java.util.logging.Logger jdk14Logger = java.util.logging.Logger.getLogger("");
 
     @Test
@@ -27,7 +26,7 @@ public class TestJdkManager {
 
         boolean managerActive = jdkManager.isFrameworkActive();
 
-        assertTrue(managerActive);
+        Assertions.assertTrue(managerActive);
     }
 
     @Test
@@ -37,7 +36,7 @@ public class TestJdkManager {
 
         Level level = jdkManager.getRootLogLevel();
 
-        assertEquals(level, Level.TRACE);
+        Assertions.assertEquals(Level.TRACE, level);
     }
     @Test
     void Check_Root_Level_Set_To_Error_Through_Jdk14_Logger() {
@@ -46,33 +45,33 @@ public class TestJdkManager {
 
         Level level = jdkManager.getRootLogLevel();
 
-        assertEquals(level, Level.ERROR);
+        Assertions.assertEquals(Level.ERROR, level);
     }
 
     @Test
     void Check_Message_Forwarded() throws InterruptedException {
         CountDownLatch latch = new CountDownLatch(1);
         JdkManager jdkManager = new JdkManager();
-        jdkManager.addListener(logMessage -> latch.countDown());
+        jdkManager.addListener(_ -> latch.countDown());
         jdkManager.setRootLogLevel(Level.TRACE);
 
-        slf4jLogger.info("A log message");
+        slf4jLogger.info("A log message 1");
 
-        assertTrue(latch.await(100, TimeUnit.MILLISECONDS));
+        Assertions.assertTrue(latch.await(100, TimeUnit.MILLISECONDS));
     }
 
     @Test
     void Check_Message_Not_Forwarded() throws InterruptedException {
         CountDownLatch latch = new CountDownLatch(1);
         JdkManager jdkManager = new JdkManager();
-        LoggerListener loggerListener = logMessage -> latch.countDown();
+        LoggerListener loggerListener = _ -> latch.countDown();
         jdkManager.addListener(loggerListener);
         jdkManager.setRootLogLevel(Level.TRACE);
         jdkManager.removeListener(loggerListener);
 
-        slf4jLogger.info("A log message");
+        slf4jLogger.info("A log message 2");
 
-        assertFalse(latch.await(100, TimeUnit.MILLISECONDS));
+        Assertions.assertFalse(latch.await(100, TimeUnit.MILLISECONDS));
     }
 
     @Test
@@ -80,14 +79,14 @@ public class TestJdkManager {
         int N = 5;
         CountDownLatch latch = new CountDownLatch(N);
         JdkManager jdkManager = new JdkManager();
-        jdkManager.addListener(logMessage -> latch.countDown());
+        jdkManager.addListener(_ -> latch.countDown());
         jdkManager.setRootLogLevel(Level.TRACE);
 
         for (int i=0; i<N; ++i) {
-            slf4jLogger.info("A log message");
+            slf4jLogger.info("A log message 3");
         }
 
-        assertTrue(latch.await(100, TimeUnit.MILLISECONDS));
+        Assertions.assertTrue(latch.await(100, TimeUnit.MILLISECONDS));
     }
 
     @Test
@@ -95,26 +94,26 @@ public class TestJdkManager {
         int N = 5;
         CountDownLatch latch = new CountDownLatch(N);
         JdkManager jdkManager = new JdkManager();
-        jdkManager.addListener(logMessage -> latch.countDown());
+        jdkManager.addListener(_ -> latch.countDown());
         jdkManager.setRootLogLevel(Level.TRACE);
 
         IntStream.range(0, N)
                 .parallel()
-                .forEach(index -> slf4jLogger.info("A log message"));
+                .forEach(_ -> slf4jLogger.info("A log message 4"));
 
-        assertTrue(latch.await(100, TimeUnit.MILLISECONDS));
+        Assertions.assertTrue(latch.await(100, TimeUnit.MILLISECONDS));
     }
 
     @Test
     void Check_Message_Not_Forwarded_If_Level_Too_Low() throws InterruptedException {
         CountDownLatch latch = new CountDownLatch(1);
         JdkManager jdkManager = new JdkManager();
-        jdkManager.addListener(logMessage -> latch.countDown());
+        jdkManager.addListener(_ -> latch.countDown());
         jdkManager.setRootLogLevel(Level.ERROR);
 
-        slf4jLogger.info("A log message");
+        slf4jLogger.info("A log message 5");
 
-        assertFalse(latch.await(100, TimeUnit.MILLISECONDS));
+        Assertions.assertFalse(latch.await(100, TimeUnit.MILLISECONDS));
     }
 
     @Test
@@ -122,7 +121,7 @@ public class TestJdkManager {
         CountDownLatch latch = new CountDownLatch(1);
         JdkManager jdkManager = new JdkManager();
         LogMessage expectedLogMessage = new LogMessage(
-                "qupath.ui.logviewer.logging.jdk.JdkManager",
+                "qupath.ui.logviewer.logging.jdk.TestJdkManager",
                 0,
                 "",        // The JDK logger does not give a thread name but a thread id, so not predictable
                 Level.ERROR,
@@ -148,6 +147,6 @@ public class TestJdkManager {
                 .setCause(expectedLogMessage.throwable())
                 .log();
 
-        assertTrue(latch.await(100, TimeUnit.MILLISECONDS));
+        Assertions.assertTrue(latch.await(100, TimeUnit.MILLISECONDS));
     }
 }
