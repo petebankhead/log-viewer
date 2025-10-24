@@ -124,16 +124,15 @@ public class TestJdkManager {
         LogMessage expectedLogMessage = new LogMessage(
                 "qupath.ui.logviewer.logging.jdk.JdkManager",
                 0,
-                "1",        // The JDK logger does not give a thread name but a thread id
+                "",        // The JDK logger does not give a thread name but a thread id, so not predictable
                 Level.ERROR,
                 "A description",
                 new Throwable()
         );
         jdkManager.addListener(logMessage -> {
-            // Test everything except the timestamp as it cannot be precisely predicted
+            // Test everything except the timestamp and thread name as they cannot be precisely predicted
             if (
                     logMessage.loggerName().equals(expectedLogMessage.loggerName()) &&
-                    logMessage.threadName().equals(expectedLogMessage.threadName()) &&
                     logMessage.level().equals(expectedLogMessage.level()) &&
                     logMessage.message().equals(expectedLogMessage.message()) &&
                     logMessage.throwable().equals(expectedLogMessage.throwable())
