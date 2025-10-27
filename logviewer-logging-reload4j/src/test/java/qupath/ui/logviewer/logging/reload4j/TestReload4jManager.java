@@ -1,5 +1,6 @@
 package qupath.ui.logviewer.logging.reload4j;
 
+import org.junit.jupiter.api.Assertions;
 import qupath.ui.logviewer.api.LogMessage;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
@@ -13,12 +14,10 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 public class TestReload4jManager {
 
-    private static final Logger slf4jLogger = LoggerFactory.getLogger(Reload4jManager.class);
+    private static final Logger slf4jLogger = LoggerFactory.getLogger(TestReload4jManager.class);
     private static final org.apache.log4j.Logger reload4jLogger = org.apache.log4j.Logger.getRootLogger();
 
     @Test
@@ -27,7 +26,7 @@ public class TestReload4jManager {
 
         boolean managerActive = reload4jManager.isFrameworkActive();
 
-        assertTrue(managerActive);
+        Assertions.assertTrue(managerActive);
     }
 
     @Test
@@ -37,7 +36,7 @@ public class TestReload4jManager {
 
         Level level = reload4jManager.getRootLogLevel();
 
-        assertEquals(level, Level.TRACE);
+        Assertions.assertEquals(Level.TRACE, level);
     }
     @Test
     void Check_Root_Level_Set_To_Error_Through_Reload4j_Logger() {
@@ -46,33 +45,33 @@ public class TestReload4jManager {
 
         Level level = reload4jManager.getRootLogLevel();
 
-        assertEquals(level, Level.ERROR);
+        Assertions.assertEquals(Level.ERROR, level);
     }
 
     @Test
     void Check_Message_Forwarded() throws InterruptedException {
         CountDownLatch latch = new CountDownLatch(1);
         Reload4jManager reload4jManager = new Reload4jManager();
-        reload4jManager.addListener(logMessage -> latch.countDown());
+        reload4jManager.addListener(_ -> latch.countDown());
         reload4jManager.setRootLogLevel(Level.TRACE);
 
-        slf4jLogger.info("A log message");
+        slf4jLogger.info("A log message 1");
 
-        assertTrue(latch.await(100, TimeUnit.MILLISECONDS));
+        Assertions.assertTrue(latch.await(100, TimeUnit.MILLISECONDS));
     }
 
     @Test
     void Check_Message_Not_Forwarded() throws InterruptedException {
         CountDownLatch latch = new CountDownLatch(1);
         Reload4jManager reload4jManager = new Reload4jManager();
-        LoggerListener loggerListener = logMessage -> latch.countDown();
+        LoggerListener loggerListener = _ -> latch.countDown();
         reload4jManager.addListener(loggerListener);
         reload4jManager.setRootLogLevel(Level.TRACE);
         reload4jManager.removeListener(loggerListener);
 
-        slf4jLogger.info("A log message");
+        slf4jLogger.info("A log message 2");
 
-        assertFalse(latch.await(100, TimeUnit.MILLISECONDS));
+        Assertions.assertFalse(latch.await(100, TimeUnit.MILLISECONDS));
     }
 
     @Test
@@ -80,14 +79,14 @@ public class TestReload4jManager {
         int N = 5;
         CountDownLatch latch = new CountDownLatch(N);
         Reload4jManager reload4jManager = new Reload4jManager();
-        reload4jManager.addListener(logMessage -> latch.countDown());
+        reload4jManager.addListener(_ -> latch.countDown());
         reload4jManager.setRootLogLevel(Level.TRACE);
 
         for (int i=0; i<N; ++i) {
-            slf4jLogger.info("A log message");
+            slf4jLogger.info("A log message 3");
         }
 
-        assertTrue(latch.await(100, TimeUnit.MILLISECONDS));
+        Assertions.assertTrue(latch.await(100, TimeUnit.MILLISECONDS));
     }
 
     @Test
@@ -95,26 +94,26 @@ public class TestReload4jManager {
         int N = 5;
         CountDownLatch latch = new CountDownLatch(N);
         Reload4jManager reload4jManager = new Reload4jManager();
-        reload4jManager.addListener(logMessage -> latch.countDown());
+        reload4jManager.addListener(_ -> latch.countDown());
         reload4jManager.setRootLogLevel(Level.TRACE);
 
         IntStream.range(0, N)
                 .parallel()
-                .forEach(index -> slf4jLogger.info("A log message"));
+                .forEach(_ -> slf4jLogger.info("A log message 4"));
 
-        assertTrue(latch.await(100, TimeUnit.MILLISECONDS));
+        Assertions.assertTrue(latch.await(100, TimeUnit.MILLISECONDS));
     }
 
     @Test
     void Check_Message_Not_Forwarded_If_Level_Too_Low() throws InterruptedException {
         CountDownLatch latch = new CountDownLatch(1);
         Reload4jManager reload4jManager = new Reload4jManager();
-        reload4jManager.addListener(logMessage -> latch.countDown());
+        reload4jManager.addListener(_ -> latch.countDown());
         reload4jManager.setRootLogLevel(Level.ERROR);
 
-        slf4jLogger.info("A log message");
+        slf4jLogger.info("A log message 5");
 
-        assertFalse(latch.await(100, TimeUnit.MILLISECONDS));
+        Assertions.assertFalse(latch.await(100, TimeUnit.MILLISECONDS));
     }
 
     @Test
@@ -122,7 +121,7 @@ public class TestReload4jManager {
         CountDownLatch latch = new CountDownLatch(1);
         Reload4jManager reload4jManager = new Reload4jManager();
         LogMessage expectedLogMessage = new LogMessage(
-                "qupath.ui.logviewer.logging.reload4j.Reload4jManager",
+                "qupath.ui.logviewer.logging.reload4j.TestReload4jManager",
                 0,
                 Thread.currentThread().getName(),
                 Level.ERROR,
@@ -149,6 +148,6 @@ public class TestReload4jManager {
                 .setCause(expectedLogMessage.throwable())
                 .log();
 
-        assertTrue(latch.await(100, TimeUnit.MILLISECONDS));
+        Assertions.assertTrue(latch.await(100, TimeUnit.MILLISECONDS));
     }
 }

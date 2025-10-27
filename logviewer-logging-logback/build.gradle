@@ -11,6 +11,7 @@ repositories {
 dependencies {
     // Use JUnit Jupiter for testing.
     testImplementation testLibs.junit
+    testRuntimeOnly testLibs.junit.platform
 
     // Use Logback as logging framework.
     implementation libs.logback

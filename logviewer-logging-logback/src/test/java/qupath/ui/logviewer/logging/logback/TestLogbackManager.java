@@ -1,5 +1,6 @@
 package qupath.ui.logviewer.logging.logback;
 
+import org.junit.jupiter.api.Assertions;
 import qupath.ui.logviewer.api.LogMessage;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
@@ -13,12 +14,10 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 public class TestLogbackManager {
 
-    private static final Logger slf4jLogger = LoggerFactory.getLogger(LogbackManager.class);
+    private static final Logger slf4jLogger = LoggerFactory.getLogger(TestLogbackManager.class);
     private static final ch.qos.logback.classic.Logger logbackLogger = LogbackManager.getRootLogger();
 
     @Test
@@ -27,7 +26,7 @@ public class TestLogbackManager {
 
         boolean managerActive = logbackManager.isFrameworkActive();
 
-        assertTrue(managerActive);
+        Assertions.assertTrue(managerActive);
     }
 
     @Test
@@ -37,7 +36,7 @@ public class TestLogbackManager {
 
         Level level = logbackManager.getRootLogLevel();
 
-        assertEquals(level, Level.TRACE);
+        Assertions.assertEquals(Level.TRACE, level);
     }
     @Test
     void Check_Root_Level_Set_To_Error_Through_Logback_Logger() {
@@ -47,33 +46,33 @@ public class TestLogbackManager {
 
         Level level = logbackManager.getRootLogLevel();
 
-        assertEquals(level, Level.ERROR);
+        Assertions.assertEquals(Level.ERROR, level);
     }
 
     @Test
     void Check_Message_Forwarded() throws InterruptedException {
         CountDownLatch latch = new CountDownLatch(1);
         LogbackManager logbackManager = new LogbackManager();
-        logbackManager.addListener(logMessage -> latch.countDown());
+        logbackManager.addListener(_ -> latch.countDown());
         logbackManager.setRootLogLevel(Level.TRACE);
 
-        slf4jLogger.info("A log message");
+        slf4jLogger.info("A log message 1");
 
-        assertTrue(latch.await(100, TimeUnit.MILLISECONDS));
+        Assertions.assertTrue(latch.await(100, TimeUnit.MILLISECONDS));
     }
 
     @Test
     void Check_Message_Not_Forwarded() throws InterruptedException {
         CountDownLatch latch = new CountDownLatch(1);
         LogbackManager logbackManager = new LogbackManager();
-        LoggerListener loggerListener = logMessage -> latch.countDown();
+        LoggerListener loggerListener = _ -> latch.countDown();
         logbackManager.addListener(loggerListener);
         logbackManager.setRootLogLevel(Level.TRACE);
         logbackManager.removeListener(loggerListener);
 
-        slf4jLogger.info("A log message");
+        slf4jLogger.info("A log message 2");
 
-        assertFalse(latch.await(100, TimeUnit.MILLISECONDS));
+        Assertions.assertFalse(latch.await(100, TimeUnit.MILLISECONDS));
     }
 
     @Test
@@ -81,14 +80,14 @@ public class TestLogbackManager {
         int N = 5;
         CountDownLatch latch = new CountDownLatch(N);
         LogbackManager logbackManager = new LogbackManager();
-        logbackManager.addListener(logMessage -> latch.countDown());
+        logbackManager.addListener(_ -> latch.countDown());
         logbackManager.setRootLogLevel(Level.TRACE);
 
         for (int i=0; i<N; ++i) {
-            slf4jLogger.info("A log message");
+            slf4jLogger.info("A log message 3");
         }
 
-        assertTrue(latch.await(100, TimeUnit.MILLISECONDS));
+        Assertions.assertTrue(latch.await(100, TimeUnit.MILLISECONDS));
     }
 
     @Test
@@ -96,26 +95,26 @@ public class TestLogbackManager {
         int N = 5;
         CountDownLatch latch = new CountDownLatch(N);
         LogbackManager logbackManager = new LogbackManager();
-        logbackManager.addListener(logMessage -> latch.countDown());
+        logbackManager.addListener(_ -> latch.countDown());
         logbackManager.setRootLogLevel(Level.TRACE);
 
         IntStream.range(0, N)
                 .parallel()
-                .forEach(index -> slf4jLogger.info("A log message"));
+                .forEach(_ -> slf4jLogger.info("A log message 4"));
 
-        assertTrue(latch.await(100, TimeUnit.MILLISECONDS));
+        Assertions.assertTrue(latch.await(100, TimeUnit.MILLISECONDS));
     }
 
     @Test
     void Check_Message_Not_Forwarded_If_Level_Too_Low() throws InterruptedException {
         CountDownLatch latch = new CountDownLatch(1);
         LogbackManager logbackManager = new LogbackManager();
-        logbackManager.addListener(logMessage -> latch.countDown());
+        logbackManager.addListener(_ -> latch.countDown());
         logbackManager.setRootLogLevel(Level.ERROR);
 
-        slf4jLogger.info("A log message");
+        slf4jLogger.info("A log message 5");
 
-        assertFalse(latch.await(100, TimeUnit.MILLISECONDS));
+        Assertions.assertFalse(latch.await(100, TimeUnit.MILLISECONDS));
     }
 
     @Test
@@ -123,7 +122,7 @@ public class TestLogbackManager {
         CountDownLatch latch = new CountDownLatch(1);
         LogbackManager logbackManager = new LogbackManager();
         LogMessage expectedLogMessage = new LogMessage(
-                "qupath.ui.logviewer.logging.logback.LogbackManager",
+                "qupath.ui.logviewer.logging.logback.TestLogbackManager",
                 System.currentTimeMillis(),
                 Thread.currentThread().getName(),
                 Level.ERROR,
@@ -150,6 +149,6 @@ public class TestLogbackManager {
                 .setCause(expectedLogMessage.throwable())
                 .log();
 
-        assertTrue(latch.await(100, TimeUnit.MILLISECONDS));
+        Assertions.assertTrue(latch.await(100, TimeUnit.MILLISECONDS));
     }
 }

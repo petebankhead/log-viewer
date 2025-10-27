@@ -11,6 +11,7 @@ repositories {
 dependencies {
     // Use JUnit Jupiter for testing.
     testImplementation testLibs.junit
+    testRuntimeOnly testLibs.junit.platform
 
     // Use JDK 1.4 Reload4j Binding.
     implementation libs.slf4j.jdk14

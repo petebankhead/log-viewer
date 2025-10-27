@@ -1,5 +1,6 @@
 package qupath.ui.logviewer.ui.main;
 
+import org.junit.jupiter.api.Assertions;
 import qupath.ui.logviewer.api.LogMessage;
 import javafx.collections.ListChangeListener;
 import javafx.collections.SetChangeListener;
@@ -14,8 +15,6 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 public class TestLogViewerModel {
 
@@ -28,7 +27,7 @@ public class TestLogViewerModel {
     void Check_Message_Added() throws InterruptedException {
         CountDownLatch latch = new CountDownLatch(1);
         LogViewerModel logViewerModel = new LogViewerModel();
-        logViewerModel.getFilteredLogs().addListener((ListChangeListener<? super LogMessage>) change -> {
+        logViewerModel.getFilteredLogs().addListener((ListChangeListener<? super LogMessage>) _ -> {
             if (logViewerModel.getFilteredLogs().size() == 1) {
                 latch.countDown();
             }
@@ -36,7 +35,7 @@ public class TestLogViewerModel {
 
         logViewerModel.addLogMessage(new LogMessage("", 0, "", Level.TRACE, "", null));
 
-        assertTrue(latch.await(100, TimeUnit.MILLISECONDS));
+        Assertions.assertTrue(latch.await(100, TimeUnit.MILLISECONDS));
     }
 
     @Test
@@ -44,7 +43,7 @@ public class TestLogViewerModel {
         int N = 10;
         CountDownLatch latch = new CountDownLatch(1);
         LogViewerModel logViewerModel = new LogViewerModel();
-        logViewerModel.getFilteredLogs().addListener((ListChangeListener<? super LogMessage>) change -> {
+        logViewerModel.getFilteredLogs().addListener((ListChangeListener<? super LogMessage>) _ -> {
             if (logViewerModel.getFilteredLogs().size() == N) {
                 latch.countDown();
             }
@@ -54,7 +53,7 @@ public class TestLogViewerModel {
             logViewerModel.addLogMessage(new LogMessage("", i, "", Level.TRACE, "", null));
         }
 
-        assertTrue(latch.await(100, TimeUnit.MILLISECONDS));
+        Assertions.assertTrue(latch.await(100, TimeUnit.MILLISECONDS));
     }
 
     @Test
@@ -65,7 +64,7 @@ public class TestLogViewerModel {
         logViewerModel.setRootLevel(expectedLevel);
         Level level = logViewerModel.getRootLevel();
 
-        assertEquals(level, expectedLevel);
+        Assertions.assertEquals(expectedLevel, level);
     }
 
     @Test
@@ -74,7 +73,7 @@ public class TestLogViewerModel {
 
         boolean loggingFrameworkFound = logViewerModel.getLoggingFrameworkFoundProperty().get();
 
-        assertTrue(loggingFrameworkFound);
+        Assertions.assertTrue(loggingFrameworkFound);
     }
 
     @Test
@@ -84,7 +83,7 @@ public class TestLogViewerModel {
         LogViewerModel logViewerModel = new LogViewerModel();
         logViewerModel.getDisplayAllThreadsProperty().set(false);
         logViewerModel.displayOneThread(threadName);
-        logViewerModel.getFilteredLogs().addListener((ListChangeListener<? super LogMessage>) change -> {
+        logViewerModel.getFilteredLogs().addListener((ListChangeListener<? super LogMessage>) _ -> {
             if (logViewerModel.getFilteredLogs().size() == 5) {
                 latch.countDown();
             }
@@ -96,7 +95,7 @@ public class TestLogViewerModel {
         logViewerModel.addLogMessage(new LogMessage("", 3, threadName, Level.TRACE, "", null));
         logViewerModel.addLogMessage(new LogMessage("", 4, "", Level.TRACE, "", null));
 
-        assertFalse(latch.await(100, TimeUnit.MILLISECONDS));
+        Assertions.assertFalse(latch.await(100, TimeUnit.MILLISECONDS));
     }
 
     @Test
@@ -106,7 +105,7 @@ public class TestLogViewerModel {
         LogViewerModel logViewerModel = new LogViewerModel();
         logViewerModel.getDisplayAllThreadsProperty().set(false);
         logViewerModel.displayOneThread(threadName);
-        logViewerModel.getFilteredLogs().addListener((ListChangeListener<? super LogMessage>) change -> {
+        logViewerModel.getFilteredLogs().addListener((ListChangeListener<? super LogMessage>) _ -> {
             if (logViewerModel.getFilteredLogs().size() == 2) {
                 latch.countDown();
             }
@@ -118,7 +117,7 @@ public class TestLogViewerModel {
         logViewerModel.addLogMessage(new LogMessage("", 3, threadName, Level.TRACE, "", null));
         logViewerModel.addLogMessage(new LogMessage("", 4, "", Level.TRACE, "", null));
 
-        assertTrue(latch.await(100, TimeUnit.MILLISECONDS));
+        Assertions.assertTrue(latch.await(100, TimeUnit.MILLISECONDS));
     }
 
     @Test
@@ -128,7 +127,7 @@ public class TestLogViewerModel {
         LogViewerModel logViewerModel = new LogViewerModel();
         logViewerModel.displayOneThread(threadName);
         logViewerModel.getDisplayAllThreadsProperty().set(true);
-        logViewerModel.getFilteredLogs().addListener((ListChangeListener<? super LogMessage>) change -> {
+        logViewerModel.getFilteredLogs().addListener((ListChangeListener<? super LogMessage>) _ -> {
             if (logViewerModel.getFilteredLogs().size() == 5) {
                 latch.countDown();
             }
@@ -140,7 +139,7 @@ public class TestLogViewerModel {
         logViewerModel.addLogMessage(new LogMessage("", 3, threadName, Level.TRACE, "", null));
         logViewerModel.addLogMessage(new LogMessage("", 4, "", Level.TRACE, "", null));
 
-        assertTrue(latch.await(100, TimeUnit.MILLISECONDS));
+        Assertions.assertTrue(latch.await(100, TimeUnit.MILLISECONDS));
     }
 
     @Test
@@ -152,7 +151,7 @@ public class TestLogViewerModel {
         logViewerModel.hideLogLevel(Level.INFO.name());
         logViewerModel.hideLogLevel(Level.TRACE.name());
         logViewerModel.displayLogLevel(Level.DEBUG.name());
-        logViewerModel.getFilteredLogs().addListener((ListChangeListener<? super LogMessage>) change -> {
+        logViewerModel.getFilteredLogs().addListener((ListChangeListener<? super LogMessage>) _ -> {
             if (logViewerModel.getFilteredLogs().size() == 5) {
                 latch.countDown();
             }
@@ -164,7 +163,7 @@ public class TestLogViewerModel {
         logViewerModel.addLogMessage(new LogMessage("", 3, "", Level.DEBUG, "", null));
         logViewerModel.addLogMessage(new LogMessage("", 4, "", Level.TRACE, "", null));
 
-        assertFalse(latch.await(100, TimeUnit.MILLISECONDS));
+        Assertions.assertFalse(latch.await(100, TimeUnit.MILLISECONDS));
     }
 
     @Test
@@ -176,7 +175,7 @@ public class TestLogViewerModel {
         logViewerModel.hideLogLevel(Level.INFO.name());
         logViewerModel.hideLogLevel(Level.TRACE.name());
         logViewerModel.displayLogLevel(Level.DEBUG.name());
-        logViewerModel.getFilteredLogs().addListener((ListChangeListener<? super LogMessage>) change -> {
+        logViewerModel.getFilteredLogs().addListener((ListChangeListener<? super LogMessage>) _ -> {
             if (logViewerModel.getFilteredLogs().size() == 1) {
                 latch.countDown();
             }
@@ -188,7 +187,7 @@ public class TestLogViewerModel {
         logViewerModel.addLogMessage(new LogMessage("", 3, "", Level.DEBUG, "", null));
         logViewerModel.addLogMessage(new LogMessage("", 4, "", Level.TRACE, "", null));
 
-        assertTrue(latch.await(100, TimeUnit.MILLISECONDS));
+        Assertions.assertTrue(latch.await(100, TimeUnit.MILLISECONDS));
     }
 
     @Test
@@ -197,7 +196,7 @@ public class TestLogViewerModel {
         LogViewerModel logViewerModel = new LogViewerModel();
         logViewerModel.getFilterByRegexProperty().set(true);
         logViewerModel.getFilterProperty().set(".*(jim|joe).*");
-        logViewerModel.getFilteredLogs().addListener((ListChangeListener<? super LogMessage>) change -> {
+        logViewerModel.getFilteredLogs().addListener((ListChangeListener<? super LogMessage>) _ -> {
             if (logViewerModel.getFilteredLogs().size() == 5) {
                 latch.countDown();
             }
@@ -209,7 +208,7 @@ public class TestLogViewerModel {
         logViewerModel.addLogMessage(new LogMessage("", 3, "", Level.TRACE, "joe", null));
         logViewerModel.addLogMessage(new LogMessage("", 4, "", Level.TRACE, "jem", null));
 
-        assertFalse(latch.await(100, TimeUnit.MILLISECONDS));
+        Assertions.assertFalse(latch.await(100, TimeUnit.MILLISECONDS));
     }
 
     @Test
@@ -218,7 +217,7 @@ public class TestLogViewerModel {
         LogViewerModel logViewerModel = new LogViewerModel();
         logViewerModel.getFilterByRegexProperty().set(true);
         logViewerModel.getFilterProperty().set(".*(jim|joe).*");
-        logViewerModel.getFilteredLogs().addListener((ListChangeListener<? super LogMessage>) change -> {
+        logViewerModel.getFilteredLogs().addListener((ListChangeListener<? super LogMessage>) _ -> {
             if (logViewerModel.getFilteredLogs().size() == 2) {
                 latch.countDown();
             }
@@ -230,7 +229,7 @@ public class TestLogViewerModel {
         logViewerModel.addLogMessage(new LogMessage("", 3, "", Level.TRACE, "joe", null));
         logViewerModel.addLogMessage(new LogMessage("", 4, "", Level.TRACE, "jem", null));
 
-        assertTrue(latch.await(100, TimeUnit.MILLISECONDS));
+        Assertions.assertTrue(latch.await(100, TimeUnit.MILLISECONDS));
     }
 
     @Test
@@ -239,7 +238,7 @@ public class TestLogViewerModel {
         LogViewerModel logViewerModel = new LogViewerModel();
         logViewerModel.getFilterByRegexProperty().set(false);
         logViewerModel.getFilterProperty().set("jim");
-        logViewerModel.getFilteredLogs().addListener((ListChangeListener<? super LogMessage>) change -> {
+        logViewerModel.getFilteredLogs().addListener((ListChangeListener<? super LogMessage>) _ -> {
             if (logViewerModel.getFilteredLogs().size() == 5) {
                 latch.countDown();
             }
@@ -251,7 +250,7 @@ public class TestLogViewerModel {
         logViewerModel.addLogMessage(new LogMessage("", 3, "", Level.TRACE, "joe", null));
         logViewerModel.addLogMessage(new LogMessage("", 4, "", Level.TRACE, "jim qsdsqd", null));
 
-        assertFalse(latch.await(100, TimeUnit.MILLISECONDS));
+        Assertions.assertFalse(latch.await(100, TimeUnit.MILLISECONDS));
     }
 
     @Test
@@ -260,7 +259,7 @@ public class TestLogViewerModel {
         LogViewerModel logViewerModel = new LogViewerModel();
         logViewerModel.getFilterByRegexProperty().set(false);
         logViewerModel.getFilterProperty().set("jim");
-        logViewerModel.getFilteredLogs().addListener((ListChangeListener<? super LogMessage>) change -> {
+        logViewerModel.getFilteredLogs().addListener((ListChangeListener<? super LogMessage>) _ -> {
             if (logViewerModel.getFilteredLogs().size() == 2) {
                 latch.countDown();
             }
@@ -272,7 +271,7 @@ public class TestLogViewerModel {
         logViewerModel.addLogMessage(new LogMessage("", 3, "", Level.TRACE, "joe", null));
         logViewerModel.addLogMessage(new LogMessage("", 4, "", Level.TRACE, "jim qsdsqd", null));
 
-        assertTrue(latch.await(100, TimeUnit.MILLISECONDS));
+        Assertions.assertTrue(latch.await(100, TimeUnit.MILLISECONDS));
     }
 
     @Test
@@ -280,7 +279,7 @@ public class TestLogViewerModel {
         List<String> threads = Arrays.asList("a", "b", "c", "d", "e");
         CountDownLatch latch = new CountDownLatch(1);
         LogViewerModel logViewerModel = new LogViewerModel();
-        logViewerModel.getAllThreads().addListener((SetChangeListener<? super String>) change -> {
+        logViewerModel.getAllThreads().addListener((SetChangeListener<? super String>) _ -> {
             if (logViewerModel.getAllThreads().containsAll(threads)) {
                 latch.countDown();
             }
@@ -290,6 +289,6 @@ public class TestLogViewerModel {
             logViewerModel.addLogMessage(new LogMessage("", 0, thread, Level.TRACE, "", null));
         }
 
-        assertTrue(latch.await(100, TimeUnit.MILLISECONDS));
+        Assertions.assertTrue(latch.await(100, TimeUnit.MILLISECONDS));
     }
 }

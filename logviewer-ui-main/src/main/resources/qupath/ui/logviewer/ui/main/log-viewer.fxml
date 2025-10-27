@@ -27,7 +27,7 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.text.Font?>
 
-<fx:root maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseEntered="#onMouseEnteredOnWindow" stylesheets="@css/styles.css" type="BorderPane" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseEntered="#onMouseEnteredOnWindow" stylesheets="@css/styles.css" type="BorderPane" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
    <center>
       <BorderPane BorderPane.alignment="CENTER">
          <center>
@@ -37,9 +37,9 @@
                          <TableColumn fx:id="colRow" editable="false" maxWidth="50.0" prefWidth="30.0" sortable="false" text="#" visible="false" />
                          <TableColumn fx:id="colLevel" editable="false" maxWidth="25.0" minWidth="25.0" prefWidth="25.0" sortable="false" />
                          <TableColumn fx:id="colTimestamp" editable="false" maxWidth="85.0" prefWidth="85.0" sortable="false" text="%Table.time" />
-                         <TableColumn fx:id="colThread" editable="false" maxWidth="1.7976931348623157E308" prefWidth="200.0" sortable="false" text="%Table.thread" />
-                         <TableColumn fx:id="colLogger" editable="false" maxWidth="1.7976931348623157E308" prefWidth="150.0" sortable="false" text="%Table.logger" />
-                         <TableColumn fx:id="colMessage" editable="false" maxWidth="1.7976931348623157E308" prefWidth="400.0" sortable="false" styleClass="col-message" text="%Table.message" />
+                         <TableColumn fx:id="colThread" editable="false" maxWidth="2000.0" prefWidth="200.0" sortable="false" text="%Table.thread" />
+                         <TableColumn fx:id="colLogger" editable="false" maxWidth="2000.0" prefWidth="150.0" sortable="false" text="%Table.logger" />
+                         <TableColumn fx:id="colMessage" editable="false" maxWidth="2000.0" prefWidth="400.0" sortable="false" styleClass="col-message" text="%Table.message" />
                      </columns>
                     <contextMenu>
                         <ContextMenu>

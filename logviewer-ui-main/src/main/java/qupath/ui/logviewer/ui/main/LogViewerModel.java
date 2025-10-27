@@ -276,10 +276,10 @@ class LogViewerModel implements LoggerListener {
     }
 
     private void setUpListeners() {
-        filterByRegexProperty.addListener((l, o, n) -> updateLogMessageFilter());
-        filterProperty.addListener((l, o, n) -> updateLogMessageFilter());
-        displayedLogLevels.addListener((SetChangeListener<? super Level>) change -> updateLogMessageFilter());
-        displayedThreads.addListener((SetChangeListener<? super String>) change -> updateLogMessageFilter());
+        filterByRegexProperty.addListener((_, _, _) -> updateLogMessageFilter());
+        filterProperty.addListener((_, _, _) -> updateLogMessageFilter());
+        displayedLogLevels.addListener((SetChangeListener<? super Level>) _ -> updateLogMessageFilter());
+        displayedThreads.addListener((SetChangeListener<? super String>) _ -> updateLogMessageFilter());
 
         allLogs.addListener((ListChangeListener<? super LogMessage>) change -> {
             while (change.next()) {
@@ -303,7 +303,7 @@ class LogViewerModel implements LoggerListener {
             updateLogMessageFilter();
         });
 
-        displayAllThreadsProperty.addListener(change -> {
+        displayAllThreadsProperty.addListener(_ -> {
             if (displayAllThreadsProperty.get()) {
                 displayedThreads.addAll(allThreads);
             }
