@@ -1,25 +1,40 @@
 package qupath.ui.logviewer.ui.main;
 
 import javafx.application.Platform;
-
+import org.junit.jupiter.api.Assumptions;
 import java.util.concurrent.Semaphore;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Utilities functions to help implementing unit tests on JavaFX objects.
  */
 public final class JavaFXUtils {
 
-    private JavaFXUtils() {}
+    private static final Logger logger = LoggerFactory.getLogger(JavaFXUtils.class);
+    private static JavaFxStatus javaFxStatus = JavaFxStatus.UNINITIALIZED;
+    private enum JavaFxStatus {
+        UNINITIALIZED,
+        FAILED,
+        INITIALIZED
+    }
 
     /**
      * Initialize the JavaFX toolkit.
      */
-    public static void initJfxRuntime() {
-        try {
-            Platform.startup(() -> {});
-        } catch (IllegalStateException ignored) {
-            // An exception is thrown if the toolkit is already initialized.
-            // I didn't find a way to know in advance if the toolkit is already initialized.
+    public synchronized static void initJfxRuntime() {
+        if (javaFxStatus == JavaFxStatus.UNINITIALIZED) {
+            try {
+                Platform.startup(() -> {});
+                javaFxStatus = JavaFxStatus.INITIALIZED;
+            } catch (Exception e) {
+                logger.error("Cannot initialize JavaFX Toolkit", e);
+                javaFxStatus = JavaFxStatus.FAILED;
+            }
+        }
+
+        if (javaFxStatus == JavaFxStatus.FAILED) {
+            Assumptions.abort("Cannot initialize JavaFX Toolkit. Aborting tests");
         }
     }
 
